@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Repository\SearchRepository;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\SeatsRequest;
+use App\Http\Resources\FindTravelResource;
+use App\Http\Resources\SeatsResource;
 use App\Models\Search;
 
 class SearchController extends Controller
@@ -24,8 +26,10 @@ class SearchController extends Controller
     {
         try {
             $data = $this->repository->find($request->validated());
-            return response()->json($data);
+
+            return FindTravelResource::collection($data)->response();
         } catch (\Exception $e) {
+            dd($e);
             return response()->json(['message' => 'Erro inesperado'], $e->getCode() ?: 500);
         }
     }
@@ -34,7 +38,7 @@ class SearchController extends Controller
     {
         try {
             $data = $this->repository->findSeats($request->validated());
-            return response()->json($data);
+            return SeatsResource::collection($data)->response();
         } catch (\Exception $e) {
             return response()->json(['message' => 'Erro inesperado'], $e->getCode() ?: 500);
         }
